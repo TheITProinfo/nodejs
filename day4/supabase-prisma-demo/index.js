@@ -1,21 +1,20 @@
 // index.js
-require("dotenv").config(); // load .env
+// require("dotenv").config(); // load .env
+// Using node --env-file=.env instead
 
 const { PrismaClient } = require("@prisma/client");
-// IMPORTANT: use the custom generated client path
-//const { PrismaClient } = require("./generated/prisma");
 
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
 async function main() {
   try {
     console.log("Starting Prisma Supabase test...");
 
-    // 1. Create Employee
-    const newEmployee = await prisma.employee.create({
-      data: {
+    // 1. Create or Update Employee
+    const newEmployee = await prisma.employee.upsert({
+      where: { employeeNo: "E-1002" },
+      update: {},
+      create: {
         employeeNo: "E-1002",
         firstName: "Hello",
         lastName: "Eric",
@@ -29,9 +28,19 @@ async function main() {
     const workDate = new Date();
     workDate.setUTCHours(0, 0, 0, 0);
 
-    // 2. Create Attendance (linked to employee)
-    const newAttendance = await prisma.attendance.create({
-      data: {
+    // 2. Upsert Attendance
+    const newAttendance = await prisma.attendance.upsert({
+      where: {
+        employeeId_workDate: {
+          employeeId: newEmployee.id,
+          workDate: workDate,
+        },
+      },
+      update: {
+        checkIn: new Date(),
+        note: "Updated check-in via Prisma",
+      },
+      create: {
         employeeId: newEmployee.id,
         workDate: workDate,
         checkIn: new Date(),
