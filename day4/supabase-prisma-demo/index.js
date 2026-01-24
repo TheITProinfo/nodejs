@@ -11,6 +11,7 @@ async function main() {
     console.log("Starting Prisma Supabase test...");
 
     // 1. Create or Update Employee
+    // https://localhost:3000/api/employees
     const newEmployee = await prisma.employee.upsert({
       where: { employeeNo: "E-1002" },
       update: {},
