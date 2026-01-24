@@ -15,7 +15,7 @@ async function main() {
       where: { employeeNo: "E-1002" },
       update: {},
       create: {
-        employeeNo: "E-1002",
+        employeeNo: "E-1003",
         firstName: "Hello",
         lastName: "Eric",
         email: "helloeric@toronto.ca",
