@@ -2,7 +2,7 @@ const service = require("../services/attendanceService");
 
 exports.upsert = async (req, res, next) => {
   try {
-    const record = await service.upsertToday(req.body);
+    const record = await service.upsertAttendance(req.body);
     res.status(201).json({ success: true, message: "Attendance saved", data: record });
   } catch (e) {
     next(e);

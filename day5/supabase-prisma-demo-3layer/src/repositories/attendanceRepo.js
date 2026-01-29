@@ -3,8 +3,20 @@ const prisma = require("../db/prisma");
 function upsertAttendance({ employeeId, workDate, checkIn, checkOut, status, note }) {
   return prisma.attendance.upsert({
     where: { employeeId_workDate: { employeeId, workDate } },
-    update: { checkIn, checkOut, status, note },
+    update: {
+      // Prisma：undefined 不会更新字段；null 会更新为 null
+      ...(checkIn !== undefined ? { checkIn } : {}),
+      ...(checkOut !== undefined ? { checkOut } : {}),
+      ...(status !== undefined ? { status } : {}),
+      ...(note !== undefined ? { note } : {}),
+    },
     create: { employeeId, workDate, checkIn, checkOut, status, note },
+  });
+}
+
+function findByEmployeeAndWorkDate({ employeeId, workDate }) {
+  return prisma.attendance.findUnique({
+    where: { employeeId_workDate: { employeeId, workDate } },
   });
 }
 
@@ -25,4 +37,9 @@ function findToday({ workDate, employeeId }) {
   });
 }
 
-module.exports = { upsertAttendance, findByEmployeeAndRange, findToday };
+module.exports = {
+  upsertAttendance,
+  findByEmployeeAndWorkDate,
+  findByEmployeeAndRange,
+  findToday,
+};
