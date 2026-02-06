@@ -76,3 +76,5 @@ prisma/*.db-journal
 # ===============================
 pm2.log
 ecosystem.config.js.backup
+
+/generated/prisma
